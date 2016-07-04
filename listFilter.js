@@ -1,25 +1,25 @@
 var fs = require('fs');
 var path = require('path');
-var dir = process.argv[2];
-var ext = '.' + process.argv[3];
 
 function hasExt (file, ext) {
-  return (path.extname(file) === ext)
+  return ((path.extname(file)) === '.' + ext)
 }
 
-  function listFilter(dir, ext) {
-    return fs.readdir( dir, function(err, files) {
-      var ret = []
-      if (err) {
-        return callback(err);
+function listFilter(dir, ext, callback) {
+  return fs.readdir( dir, function(err, files) {
+    if (err) {
+      return callback(err);
+    }
+    var ret = [];
+    files.forEach( function(file) {
+      if (hasExt(file, ext)) {
+        ret.push(file);
       }
-      files.forEach( function(file) {
-        ret.push(hasExt(file, ext));
-      });
-      return ret
     });
-  }
-
-module.exports = function(dir, ext) {
-  return listFilter(dir, ext);
+    return callback(null, ret);
+  });
 }
+
+
+
+module.exports = listFilter
